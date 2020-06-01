@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 
-public class Address implements ISetValue{
+public class Address implements ISetValue {
     private static final Logger log = Logger.getLogger(Address.class);
     private String street;
     private Integer house;
@@ -41,15 +41,12 @@ public class Address implements ISetValue{
                     String value = jsonObject.get(field.getName()).toString();
                     try {
                         field.setAccessible(true);
-                        SetValue(field, value);
+                        //удаляем кавычки, которые добавляет парсер gson
+                        if(value.length()>1 && value.charAt(0)=='"' && value.charAt(value.length()-1)=='"'){
+                            SetValue(field, value.substring(1,value.length()-1));
+                        } else SetValue(field, value);
                     } catch (IllegalAccessException e) {
-                        try {
-                            SetValue(field, null);
-                            log.log(Level.ERROR, e);
-                        } catch (IllegalAccessException ex) {
-                            System.out.println("В настоящее время исполняемый метод не имеет доступа к определению указанного класса, поля, метода или конструктора. Подробнее см. log-файл");
-                            log.log(Level.ERROR, ex);
-                        }
+                        SetDefaultValue(field, null, log);
                     }
                 }
             }

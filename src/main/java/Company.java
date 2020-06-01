@@ -1,6 +1,7 @@
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -16,7 +17,7 @@ public class Company implements ISetValue {
     private static final Logger log = Logger.getLogger(Company.class);
     @Property(propertyName = "myCompanyName")
     private String myCompanyName;
-    @Property(propertyName = "myCompanyOwner", defaultValue = "I am owner.")
+    @Property(propertyName = "myCompanyOwner", defaultValue = "Default owner")
     private String myCompanyOwner;
     @Property(propertyName = "address")
     private Address address;
@@ -82,7 +83,7 @@ public class Company implements ISetValue {
             load(io);
             io.close();
         } catch (IOException e) {
-            System.out.println("Не удается найти указанный файл: " + file + " (подробнее см. log-файл)");
+            System.out.println("Невозможно открыть указанный файл " + file + " (подробнее см. log-файл).");
             log.log(Level.ERROR, e);
             return;
         }
@@ -94,7 +95,7 @@ public class Company implements ISetValue {
                 String value = getValue(valueProperty);
                 if (value == null)
                     value = defaultProperty;
-                if (field.getType() == String.class || field.getType() == Integer.class || field.getType() == Double.class || field.getType() == Long.class) {
+                if (field.getType() == String.class || field.getType() == Integer.class || field.getType() == Double.class || field.getType() == Long.class || value.equals("null")) {
                     try {
                         field.setAccessible(true);
                         SetValue(field, value);
@@ -103,7 +104,7 @@ public class Company implements ISetValue {
                             log.log(Level.ERROR, e);
                             SetValue(field, null);
                         } catch (IllegalAccessException ex) {
-                            System.out.println("В настоящее время исполняемый метод не имеет доступа к определению указанного класса, поля, метода или конструктора. Подробнее см. log-файл");
+                            System.out.println("Некорректный тип данных (подробнее см. log-файл).");
                             log.log(Level.ERROR, ex);
                         }
                     }
@@ -113,19 +114,15 @@ public class Company implements ISetValue {
                         JsonObject jsonObject = jsonParser.getAsJsonObject();
                         Method setJSONValue = field.getType().getMethod("SetValueField", JsonObject.class);
                         setJSONValue.invoke(this.address, jsonObject);
-                    } catch (IllegalStateException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                        if (e instanceof IllegalStateException)
-                            System.out.println("Некорректный json: " + value + " подробнее см. log-файл");
+                    } catch (IllegalStateException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | JsonSyntaxException e) {
+                        if (e instanceof JsonSyntaxException)
+                            System.out.println("Некорректный json (подробнее см. log-файл):\n" + value);
                         else if (e instanceof NoSuchMethodException)
-                            System.out.println("Вызываемый метод не найден. Подробнее см. log-файл");
+                            System.out.println("Вызываемый метод не найден (подробнее см. log-файл).");
                         else if (e instanceof InvocationTargetException)
-                            System.out.println("Вызываемый метод выкинул исключение. Подробнее см. log-файл");
+                            System.out.println("Вызываемый метод отработал с ошибками (подробнее см. log-файл).");
                         log.log(Level.ERROR, e);
-                        try { SetValue(field, null);
-                        } catch (IllegalAccessException ex) {
-                            System.out.println("В настоящее время исполняемый метод не имеет доступа к определению указанного класса, поля, метода или конструктора. Подробнее см. log-файл");
-                            log.log(Level.ERROR, ex);
-                        }
+                        SetDefaultValue(field, null, log);
                     }
                 }
             }

@@ -4,7 +4,7 @@ public class CompanyTest {
     //данный тест демонстрирует то, что нельзя создать 2 объекта класса Company
     //реализован паттерн проектирования - Singleton
     @Test
-    public void CheckingTheDesignPatternSingleton() throws  Exception{
+    public void CheckingTheDesignPatternSingleton() {
         Company company = Company.getInstance("FilesProperty\\test.properties");
         System.out.println("myCompanyName: " + company.getMyCompanyName());
         System.out.println("myCompanyOwner: " + company.getMyCompanyOwner());
@@ -19,7 +19,7 @@ public class CompanyTest {
 
     //данный тест домонстрирует работоспособность метода doRefresh()
     @Test
-    public void ValidationDoRefresh () throws  Exception{
+    public void ValidationDoRefresh() {
         Company company = Company.getInstance("FilesProperty\\test.properties");
         System.out.println("myCompanyName: " + company.getMyCompanyName());
         System.out.println("myCompanyOwner: " + company.getMyCompanyOwner());
@@ -34,7 +34,7 @@ public class CompanyTest {
 
     //данный тест показывает корректную обработку некорректного файла
     @Test
-    public void ChekingInvalidFile() throws  Exception{
+    public void ChekingInvalidFile() {
         Company company = Company.getInstance("FilesProperty\\test23.properties");
     }
 }
