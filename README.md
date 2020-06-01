@@ -1,3 +1,4 @@
+Запускаемый файл проекта out\PropertiesLoader.jar
 Инструкция по запуску из командной строки: 
 В качестве аргумента jar-файлу необходимо передать файл со значениями полей класса, например:
 java -jar PropertiesLoader.jar Company.properties
