@@ -22,7 +22,7 @@ public class Main {
             }
             try {
                 Company company = Company.getInstance(args[0]);
-                System.out.println("\nВходной файл: " + args[0] + "\nПоля:");
+                System.out.println("\nВходной файл:" + args[0] + "\nПоля:");
                 PrintFields(company);
             } catch (Exception e) {
                 HelpMessage();
