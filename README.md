@@ -4,6 +4,6 @@
 <code>java -jar PropertiesLoader.jar Company.properties</code><br>
 <br>
 <h5>Синтаксис файла *.properties (значение может быть JSON-строкой)</h5>
-# имя параметра = значение параметра<br>
+<code># имя параметра = значение параметра<br>
 myCompanyName=SuperSoft<br>
-address={street: Pushkina, house: 15}<br>
+address={street: Pushkina, house: 15}<br></code>
